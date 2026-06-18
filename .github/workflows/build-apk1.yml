@@ -1,0 +1,95 @@
+name: Build APKs
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+    paths-ignore:
+      - '**.md'
+      - '**.txt'
+      - '.github/**'
+      - '.idea/**'
+      - '!.github/workflows/**'
+
+jobs:
+  build:
+    name: Build Portal
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Java 21
+        uses: actions/setup-java@v4          # 改用官方 action
+        with:
+          distribution: jetbrains
+          java-version: 21
+
+      - name: Cache Gradle Dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            !~/.gradle/caches/build-cache-*
+          key: gradle-deps-${{ hashFiles('**/build.gradle.kts', '**/gradle.properties') }}
+          restore-keys: gradle-deps-
+
+      # 不再单独缓存构建缓存（避免污染）
+
+      - name: Setup google-services.json
+        run: echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 -d > app/google-services.json
+
+      - name: Setup Keystore
+        run: echo "${{ secrets.SIGN_KEYSTORE_BASE64 }}" | base64 -d > keystore.jks
+
+      - name: Build with Gradle
+        run: |
+          chmod +x ./gradlew
+          ./gradlew :app:assembleRelease --build-cache --parallel --stacktrace \
+            -Dorg.gradle.jvmargs=-Xmx2048m
+        env:
+          KEYSTORE_PATH: "./keystore.jks"          # 修正路径
+          KEYSTORE_PASSWORD: ${{ secrets.SIGN_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.SIGN_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.SIGN_KEY_PASSWORD }}
+
+      - name: Collect APKs
+        id: collect
+        run: |
+          # 通用查找：优先找分拆包，若无则找通用包
+          APK_ALL=$(find app/build/outputs/apk -name '*.apk' | grep -E 'release/.*\.apk$' | head -n 1)
+          APK_ARM64=$(find app/build/outputs/apk -name '*arm64*release*.apk' | head -n 1 || true)
+          APK_X86_64=$(find app/build/outputs/apk -name '*x86_64*release*.apk' | head -n 1 || true)
+          echo "APK_ALL=$APK_ALL" >> $GITHUB_ENV
+          echo "APK_ARM64=$APK_ARM64" >> $GITHUB_ENV
+          echo "APK_X86_64=$APK_X86_64" >> $GITHUB_ENV
+          # 提取版本名（根据实际文件名调整 sed 规则）
+          version_all=$(basename "$APK_ALL" .apk | sed 's/app-release-//' | sed 's/app-//')
+          version_arm64=$(basename "$APK_ARM64" .apk | sed 's/app-//' | sed 's/-release//')
+          version_x86=$(basename "$APK_X86_64" .apk | sed 's/app-//' | sed 's/-release//')
+          echo "PORTAL_VERSION_ALL=$version_all" >> $GITHUB_ENV
+          echo "PORTAL_VERSION_ARM64=$version_arm64" >> $GITHUB_ENV
+          echo "PORTAL_VERSION_x86_64=$version_x86" >> $GITHUB_ENV
+
+      - name: Show SHA256
+        run: |
+          echo "### Build Success :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "|ABI|SHA256|" >> $GITHUB_STEP_SUMMARY
+          echo "|:--------:|:----------|" >> $GITHUB_STEP_SUMMARY
+          [ -n "${{ env.APK_ALL }}" ] && echo "|all|$(sha256sum ${{ env.APK_ALL }} | cut -d' ' -f1)|" >> $GITHUB_STEP_SUMMARY
+          [ -n "${{ env.APK_ARM64 }}" ] && echo "|arm64|$(sha256sum ${{ env.APK_ARM64 }} | cut -d' ' -f1)|" >> $GITHUB_STEP_SUMMARY
+          [ -n "${{ env.APK_X86_64 }}" ] && echo "|x86_64|$(sha256sum ${{ env.APK_X86_64 }} | cut -d' ' -f1)|" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload APKs
+        uses: actions/upload-artifact@v4
+        with:
+          name: "app-release-${{ env.PORTAL_VERSION_ALL }}"
+          path: |
+            ${{ env.APK_ALL }}
+            ${{ env.APK_ARM64 }}
+            ${{ env.APK_X86_64 }}
+          if-no-files-found: ignore
