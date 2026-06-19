@@ -26,6 +26,7 @@ import moe.fuqiuluo.portal.ext.disableGetCurrentLocation
 import moe.fuqiuluo.portal.ext.disableRegisterLocationListener
 import moe.fuqiuluo.portal.ext.disableWifiScan
 import moe.fuqiuluo.portal.ext.mockStep
+import moe.fuqiuluo.portal.ext.stepBaseCount
 import moe.fuqiuluo.portal.ext.stepFrequency
 import moe.fuqiuluo.portal.ext.hookSensor
 import moe.fuqiuluo.portal.ext.minSatelliteCount
