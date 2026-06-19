@@ -1,4 +1,4 @@
-﻿package moe.fuqiuluo.xposed
+package moe.fuqiuluo.xposed
 
 import android.annotation.SuppressLint
 import android.os.Bundle

@@ -1,4 +1,4 @@
-﻿package moe.fuqiuluo.portal.service
+package moe.fuqiuluo.portal.service
 
 import android.annotation.SuppressLint
 import android.content.Context

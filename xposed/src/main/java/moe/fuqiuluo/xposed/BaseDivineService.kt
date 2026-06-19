@@ -1,4 +1,4 @@
-﻿package moe.fuqiuluo.xposed
+package moe.fuqiuluo.xposed
 
 import android.content.Context
 import android.location.Location

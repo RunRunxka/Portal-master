@@ -1,4 +1,4 @@
-﻿package moe.fuqiuluo.portal.ext
+package moe.fuqiuluo.portal.ext
 
 import android.content.Context
 import androidx.core.content.edit

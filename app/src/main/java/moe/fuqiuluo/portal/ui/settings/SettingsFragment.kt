@@ -1,4 +1,4 @@
-﻿package moe.fuqiuluo.portal.ui.settings
+package moe.fuqiuluo.portal.ui.settings
 
 import android.annotation.SuppressLint
 import android.os.Bundle

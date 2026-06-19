@@ -1,4 +1,4 @@
-﻿package moe.fuqiuluo.dobby
+package moe.fuqiuluo.dobby
 
 object Dobby {
 
