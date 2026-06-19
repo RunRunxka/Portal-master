@@ -1,10 +1,10 @@
-﻿
 #include <dobby.h>
 #include <jni.h>
 #include <sys/mman.h>
 #include <sys/time.h>
+#include <time.h>
 #include <unistd.h>
-#include \"sensor_hook.h\"
+#include "sensor_hook.h"
 
 bool enableSensorHook = false;
 
@@ -26,13 +26,13 @@ JNI_OnLoad(JavaVM* vm, void* reserved) {
     return JNI_VERSION_1_6;
 }
 
-extern \"C\"
+extern "C"
 JNIEXPORT void JNICALL
 Java_moe_fuqiuluo_dobby_Dobby_setStatus(JNIEnv *env, jobject thiz, jboolean status) {
     enableSensorHook = status;
 }
 
-extern \"C\"
+extern "C"
 JNIEXPORT void JNICALL
 Java_moe_fuqiuluo_dobby_Dobby_setStepMockStatus(JNIEnv *env, jobject thiz, jboolean status, jint frequency, jlong baseCount) {
     enableStepMock = status;
@@ -44,14 +44,14 @@ Java_moe_fuqiuluo_dobby_Dobby_setStepMockStatus(JNIEnv *env, jobject thiz, jbool
     }
 }
 
-extern \"C\"
+extern "C"
 JNIEXPORT void JNICALL
 Java_moe_fuqiuluo_dobby_Dobby_setStepCount(JNIEnv *env, jobject thiz, jlong count) {
     stepBaseCount = count;
     stepMockStartNanos = getTimeNanos();
 }
 
-extern \"C\"
+extern "C"
 JNIEXPORT void JNICALL
 Java_moe_fuqiuluo_dobby_Dobby_setStepFrequency(JNIEnv *env, jobject thiz, jint frequency) {
     if (frequency > 0) {

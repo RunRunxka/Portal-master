@@ -4,12 +4,13 @@
 #include <dobby.h>
 #include <unistd.h>
 #include <sys/time.h>
+#include <time.h>
 #include "sensor_hook.h"
 #include "logging.h"
 #include "elf_util.h"
 #include "dobby_hook.h"
 
-#define LIBSF_PATH \"/system/lib64/libsensorservice.so\"
+#define LIBSF_PATH "/system/lib64/libsensorservice.so"
 
 extern bool enableSensorHook;
 
@@ -33,7 +34,7 @@ static inline int64_t getTimeNanos() {
 
 int64_t SensorEventQueueWrite(void *tube, void *events, int64_t numEvents) {
     if (enableSensorHook) {
-        LOGD(\"SensorEventQueueWrite called\");
+        LOGD("SensorEventQueueWrite called");
     }
     return OriginalSensorEventQueueWrite(tube, events, numEvents);
 }
@@ -85,7 +86,7 @@ void ConvertToSensorEvent(void *src, void *dst) {
     }
 
     if (enableSensorHook) {
-        LOGD(\"ConvertToSensorEvent called\");
+        LOGD("ConvertToSensorEvent called");
     }
 }
 
@@ -93,19 +94,19 @@ void doSensorHook() {
     SandHook::ElfImg sensorService(LIBSF_PATH);
 
     if (!sensorService.isValid()) {
-        LOGE(\"failed to load libsensorservice\");
+        LOGE("failed to load libsensorservice");
         return;
     }
 
-    auto sensorWrite = sensorService.getSymbolAddress<void*>(\"_ZN7android16SensorEventQueue5writeERKNS_2spINS_7BitTubeEEEPK12ASensorEventm\");
+    auto sensorWrite = sensorService.getSymbolAddress<void*>("_ZN7android16SensorEventQueue5writeERKNS_2spINS_7BitTubeEEEPK12ASensorEventm");
     if (sensorWrite == nullptr) {
-        sensorWrite = sensorService.getSymbolAddress<void*>(\"_ZN7android16SensorEventQueue5writeERKNS_2spINS_7BitTubeEEEPK12ASensorEventj\");
+        sensorWrite = sensorService.getSymbolAddress<void*>("_ZN7android16SensorEventQueue5writeERKNS_2spINS_7BitTubeEEEPK12ASensorEventj");
     }
 
-    auto convertToSensorEvent = sensorService.getSymbolAddress<void*>(\"_ZN7android8hardware7sensors4V1_014implementation20convertToSensorEventERKNS2_5EventEP15sensors_event_t\");
+    auto convertToSensorEvent = sensorService.getSymbolAddress<void*>("_ZN7android8hardware7sensors4V1_014implementation20convertToSensorEventERKNS2_5EventEP15sensors_event_t");
 
-    LOGD(\"Dobby SensorEventQueue::write found at %p\", sensorWrite);
-    LOGD(\"Dobby convertToSensorEvent found at %p\", convertToSensorEvent);
+    LOGD("Dobby SensorEventQueue::write found at %p", sensorWrite);
+    LOGD("Dobby convertToSensorEvent found at %p", convertToSensorEvent);
 
     if (sensorWrite != nullptr) {
         OriginalSensorEventQueueWrite = (OriginalSensorEventQueueWriteType)InlineHook(sensorWrite, (void *)SensorEventQueueWrite);

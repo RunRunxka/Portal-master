@@ -1,11 +1,12 @@
-﻿//
+//
 // Created by fuqiuluo on 2024/10/15.
 //
 
 #ifndef PORTAL_SENSOR_HOOK_H
 #define PORTAL_SENSOR_HOOK_H
 
-#include \"android/sensor.h\"
+#include "android/sensor.h"
+#include <cstdint>
 
 // ssize_t SensorEventQueue::write(const sp<BitTube>& tube,
 //        ASensorEvent const* events, size_t numEvents)
