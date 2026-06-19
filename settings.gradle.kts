@@ -17,9 +17,6 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven ( url = "https://maven.aliyun.com/nexus/content/repositories/google")
-        maven ( url = "https://maven.aliyun.com/nexus/content/groups/public/" )
-        maven ( url = "https://maven.aliyun.com/nexus/content/repositories/jcenter")
         maven (url = "https://maven.pkg.jetbrains.space/public/p/ktor/eap")
         maven (url = "https://dl.bintray.com/kotlin/kotlin-eap" )
         maven (url = "https://api.xposed.info/" )
