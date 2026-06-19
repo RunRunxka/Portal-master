@@ -457,12 +457,12 @@
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="姝ユ暟妯℃嫙"
+                        android:text="Step Mock"
                         android:textColor="@color/portal_mini_title_color" />
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="妯℃嫙姝ユ暟璁℃暟鍣ㄥ拰姝ユ暟妫€娴嬪櫒浼犳劅鍣ㄦ暟鎹?"
+                        android:text="Simulate step counter &amp; detector sensor data"
                         android:textSize="11sp" />
                 </LinearLayout>
                 <com.google.android.material.switchmaterial.SwitchMaterial
@@ -487,7 +487,7 @@
                     android:id="@+id/step_frequency_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="姝ラ"
+                    android:text="Step Frequency"
                     android:textColor="@color/portal_mini_title_color"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -496,7 +496,7 @@
                     android:id="@+id/step_frequency_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="姣忓垎閽熸鏁帮紝鑼冨洿 60-180"
+                    android:text="Steps per minute, range 30-300"
                     android:textSize="11sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/step_frequency_title"/>
@@ -505,7 +505,8 @@
                     android:id="@+id/step_frequency_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="100姝?鍒?                    android:textSize="11sp"
+                    android:text="100 steps/min"
+                    android:textSize="11sp"
                     app:layout_constraintTop_toBottomOf="@id/step_frequency_title"
                     app:layout_constraintEnd_toEndOf="parent" />
 

@@ -234,28 +234,28 @@ class SettingsFragment : Fragment() {
             with(mockServiceViewModel) {
                 if (isChecked) {
                     if(!MockServiceHelper.startStepMock(locationManager!!, context.stepFrequency, context.stepBaseCount)) {
-                        showToast("寮€鍚鏁版ā鎷熷け璐ワ細鏃犳硶杩炴帴鍒扮郴缁熸湇鍔?)
+                        showToast("Failed to start step mock")
                     }
                 } else {
                     if(!MockServiceHelper.stopStepMock(locationManager!!)) {
-                        showToast("鍋滄姝ユ暟妯℃嫙澶辫触锛氭棤娉曡繛鎺ュ埌绯荤粺鏈嶅姟")
+                        showToast("Failed to stop step mock")
                     }
                 }
             }
         }
-        binding.stepFrequencyValue.text = "%d姝?鍒?.format(context.stepFrequency)
+        binding.stepFrequencyValue.text = "%d steps/min".format(context.stepFrequency)
         binding.stepFrequencyLayout.setOnClickListener {
-            showDialog("璁剧疆姝ラ", context.stepFrequency.toString()) {
+            showDialog("Set step frequency", context.stepFrequency.toString()) {
                 val value = it.toIntOrNull()
                 if (value == null || value < 30) {
-                    showToast("姝ラ涓嶈兘浣庝簬30")
+                    showToast("Step frequency must be >= 30")
                     return@showDialog
                 } else if (value > 300) {
-                    showToast("姝ラ涓嶈兘瓒呰繃300")
+                    showToast("Step frequency must be <= 300")
                     return@showDialog
                 }
                 context.stepFrequency = value
-                binding.stepFrequencyValue.text = "%d姝?鍒?.format(value)
+                binding.stepFrequencyValue.text = "%d steps/min".format(value)
                 if (context.mockStep) {
                     MockServiceHelper.setStepFrequency(locationManager!!, value)
                 }
