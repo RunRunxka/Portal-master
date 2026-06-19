@@ -258,7 +258,7 @@ class SettingsFragment : Fragment() {
                 context.stepFrequency = value
                 binding.stepFrequencyValue.text = "%d steps/min".format(value)
                 if (context.mockStep) {
-                    MockServiceHelper.setStepFrequency(locationManager!!, value)
+                    MockServiceHelper.setStepFrequency(mockServiceViewModel.locationManager!!, value)
                 }
             }
         }
